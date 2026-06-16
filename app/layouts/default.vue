@@ -23,6 +23,7 @@ const toggleDarkMode = () => {
       <NuxtLink to="/" class="site-title">
         <span class="site-title__crest">⚔</span>
         <span class="site-title__text">일랜시아 가이드</span>
+        <span class="site-title__sub">Project ER</span>
       </NuxtLink>
       <AuthPanel class="header-auth" />
       <button class="darkmode-button" aria-label="다크모드 전환" @click="toggleDarkMode">
@@ -85,6 +86,22 @@ const toggleDarkMode = () => {
 
 .site-title__crest {
   font-size: 1.3rem;
+}
+
+.site-title__sub {
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius);
+  background-color: rgba(255, 248, 230, 0.85);
+  color: var(--color-accent);
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 768px) {
+  .site-title__sub {
+    display: none;
+  }
 }
 
 .hamburger-button,

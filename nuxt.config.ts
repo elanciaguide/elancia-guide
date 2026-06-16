@@ -17,7 +17,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'ko' },
-      titleTemplate: '%s | 일랜시아 가이드',
+      titleTemplate: '%s | 일랜시아 가이드 (Project ER)',
       meta: [
         { name: 'description', content: '일랜시아(Elancia) 베타 공식 커뮤니티 가이드 — 입문, 시스템, 도감, 공략' },
         { property: 'og:type', content: 'website' },
