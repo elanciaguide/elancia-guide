@@ -1,0 +1,202 @@
+/**
+ * Elancia 가이드 테마
+ * 컨셉: 일랜시아(넥슨, 1999)의 도트 감성 + 중세 판타지 양피지 UI
+ * - 픽셀 폰트(Galmuri)로 제목·UI, 본문은 가독성 우선
+ * - 양피지/청동/금색 팔레트, 다크모드는 던전풍 짙은 갈색
+ * - 픽셀 테두리(계단식 box-shadow)로 레트로 UI 질감
+ */
+
+/* 한글 픽셀 폰트 Galmuri (오픈소스, 도트 게임 감성) */
+@import url('https://cdn.jsdelivr.net/gh/quiple/galmuri/dist/galmuri.css');
+
+:root {
+  /* 양피지 라이트 테마 */
+  --color-bg: #f4ecd8;
+  --color-surface: #fbf6e9;
+  --color-surface-alt: #efe3c8;
+  --color-text: #3a2f1f;
+  --color-text-muted: #6f5f44;
+  --color-border: #c9b287;
+  --color-border-strong: #a8895a;
+
+  /* 청동·금색 포인트 */
+  --color-accent: #8a5a1e;
+  --color-accent-strong: #b8791f;
+  --color-accent-soft: rgba(184, 121, 31, 0.14);
+  --color-link: #9a5b12;
+
+  --font-pixel: 'Galmuri11', 'Galmuri9', monospace;
+  --font-body: 'Pretendard', -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+
+  --shadow-pixel: 3px 3px 0 var(--color-border-strong);
+  --shadow-pixel-sm: 2px 2px 0 var(--color-border-strong);
+  --radius: 4px;
+}
+
+/* 던전풍 다크 테마 */
+.theme-dark {
+  --color-bg: #1d1812;
+  --color-surface: #2a231a;
+  --color-surface-alt: #342b20;
+  --color-text: #ece2cf;
+  --color-text-muted: #b3a587;
+  --color-border: #4d3f2b;
+  --color-border-strong: #6b5837;
+
+  --color-accent: #d6a24a;
+  --color-accent-strong: #e8bb63;
+  --color-accent-soft: rgba(232, 187, 99, 0.16);
+  --color-link: #e0b25a;
+
+  --shadow-pixel: 3px 3px 0 #100c08;
+  --shadow-pixel-sm: 2px 2px 0 #100c08;
+}
+
+html,
+body,
+#__nuxt {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- 콘텐츠 타이포그래피 (마크다운 렌더 영역) ---- */
+.content-prose {
+  max-width: 860px;
+  line-height: 1.75;
+}
+
+.content-prose h1,
+.content-prose h2,
+.content-prose h3,
+.content-prose h4 {
+  font-family: var(--font-pixel);
+  color: var(--color-accent);
+  line-height: 1.4;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.content-prose h1 {
+  font-size: 1.7rem;
+  border-bottom: 3px solid var(--color-border-strong);
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.content-prose h2 {
+  font-size: 1.3rem;
+  padding-left: 0.6rem;
+  border-left: 5px solid var(--color-accent-strong);
+}
+
+.content-prose h3 {
+  font-size: 1.08rem;
+}
+
+.content-prose p {
+  margin: 0.85rem 0;
+}
+
+.content-prose a {
+  color: var(--color-link);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--color-link);
+}
+
+.content-prose a:hover {
+  background-color: var(--color-accent-soft);
+}
+
+.content-prose ul,
+.content-prose ol {
+  padding-left: 1.4rem;
+}
+
+.content-prose li {
+  margin: 0.3rem 0;
+}
+
+.content-prose code {
+  font-family: var(--font-pixel);
+  font-size: 0.85em;
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  padding: 0.05em 0.35em;
+}
+
+.content-prose pre {
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.content-prose pre code {
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.content-prose blockquote {
+  margin: 1.2rem 0;
+  padding: 0.6rem 1rem;
+  background-color: var(--color-accent-soft);
+  border-left: 5px solid var(--color-accent-strong);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--color-text-muted);
+}
+
+/* 도감 등 데이터 표 — 양피지 격자 */
+.content-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2rem 0;
+  font-size: 0.92rem;
+  box-shadow: var(--shadow-pixel-sm);
+}
+
+.content-prose th,
+.content-prose td {
+  border: 1px solid var(--color-border);
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+}
+
+.content-prose th {
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  background-color: var(--color-accent);
+  color: #fff8e6;
+}
+
+.theme-dark .content-prose th {
+  color: #1d1812;
+}
+
+.content-prose tbody tr:nth-child(odd) {
+  background-color: var(--color-surface);
+}
+
+.content-prose tbody tr:nth-child(even) {
+  background-color: var(--color-surface-alt);
+}
+
+.content-prose tbody tr:hover {
+  background-color: var(--color-accent-soft);
+}
+
+.content-prose hr {
+  border: none;
+  border-top: 2px dashed var(--color-border-strong);
+  margin: 2rem 0;
+}
