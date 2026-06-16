@@ -15,9 +15,6 @@ const slug = computed(() => String(route.params.slug))
 const category = computed(() => categoryBySlug(slug.value))
 
 type CategoryPost = Pick<PostSummary, 'id' | 'authorName' | 'title' | 'createdAt'>
-const posts = ref<CategoryPost[]>([])
-const isLoading = ref(true)
-const loadError = ref('')
 
 /** 이 카테고리에 글을 쓸 수 있는가 */
 const canWrite = computed(() => {
@@ -25,27 +22,27 @@ const canWrite = computed(() => {
   return !category.value.isStaffOnly || hasPermission(PERMISSION.noticeWrite)
 })
 
-const loadPosts = async () => {
-  if (!category.value) {
-    loadError.value = '존재하지 않는 카테고리입니다.'
-    isLoading.value = false
-    return
-  }
-  isLoading.value = true
-  loadError.value = ''
-  try {
-    const rows = await boardService.listPostsByCategory(category.value.id)
-    posts.value = rows.map((row): CategoryPost => ({
+/** SSR: 서버에서 카테고리·글 목록을 받아 HTML 에 포함(검색 색인). slug 변경 시 재조회. */
+const { data, pending: isLoading, error, refresh } = await useAsyncData(
+  () => `board-category-${slug.value}`,
+  async () => {
+    await loadCategories()
+    const matched = categoryBySlug(slug.value)
+    if (!matched) throw createError({ statusCode: 404, statusMessage: '존재하지 않는 카테고리입니다.' })
+    const rows = await boardService.listPostsByCategory(matched.id)
+    return rows.map((row): CategoryPost => ({
       id: row.id,
       authorName: row.author_name,
       title: row.title,
       createdAt: row.created_at,
     }))
-  } catch (caughtError) {
-    loadError.value = caughtError instanceof Error ? caughtError.message : '불러오기 실패'
-  }
-  isLoading.value = false
-}
+  },
+  { watch: [slug] },
+)
+
+const posts = computed(() => data.value ?? [])
+const loadError = computed(() => (error.value ? '불러오기 실패' : ''))
+const loadPosts = refresh
 
 const {
   isWriting,
@@ -60,13 +57,6 @@ const {
   insertYoutube,
   submitPost,
 } = usePostComposer(() => category.value?.id ?? null, loadPosts)
-
-watch(slug, loadPosts)
-
-onMounted(async () => {
-  await loadCategories()
-  await loadPosts()
-})
 </script>
 
 <template>

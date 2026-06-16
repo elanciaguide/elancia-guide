@@ -12,11 +12,6 @@ const { loadCategories, categoryById } = useBoardCategories()
 
 const postId = Number(route.params.id)
 
-const post = ref<PostDetail | null>(null)
-const comments = ref<Comment[]>([])
-const isLoading = ref(true)
-const loadError = ref('')
-
 const newComment = ref('')
 const isSubmitting = ref(false)
 
@@ -26,18 +21,28 @@ const isTogglingLike = ref(false)
 
 const canManage = (authorId: string) => currentUser.value?.id === authorId
 
-const loadPost = async () => {
-  isLoading.value = true
-  loadError.value = ''
-  try {
-    post.value = await boardService.getPost(postId)
-    comments.value = await boardService.listComments(postId)
-    await loadLikes()
-  } catch (caughtError) {
-    loadError.value = caughtError instanceof Error ? caughtError.message : '불러오기 실패'
-  }
-  isLoading.value = false
-}
+/** SSR: 서버에서 글 본문·댓글을 받아 HTML 에 포함(검색 색인·공유 미리보기). */
+const { data, pending: isLoading, error, refresh: loadPost } = await useAsyncData(
+  `board-post-${postId}`,
+  async () => {
+    await loadCategories()
+    const detail = await boardService.getPost(postId)
+    const postComments = await boardService.listComments(postId)
+    return { post: detail, comments: postComments }
+  },
+)
+
+const post = computed<PostDetail | null>(() => data.value?.post ?? null)
+const comments = computed<Comment[]>(() => data.value?.comments ?? [])
+const loadError = computed(() => (error.value ? '불러오기 실패' : ''))
+
+/** 글 내용으로 검색/공유 메타 설정 */
+useSeoMeta({
+  title: () => post.value?.title ?? '게시글',
+  description: () => post.value?.body?.slice(0, 150) ?? '일랜시아 가이드 게시판',
+  ogTitle: () => post.value?.title ?? '게시글',
+  ogDescription: () => post.value?.body?.slice(0, 150) ?? '일랜시아 가이드 게시판',
+})
 
 const loadLikes = async () => {
   likeCount.value = await boardService.countLikes(postId)
@@ -86,10 +91,8 @@ const deleteComment = async (commentId: number) => {
   await loadPost()
 }
 
-onMounted(async () => {
-  await loadCategories()
-  await loadPost()
-})
+/** 좋아요는 사용자별 상태 → 클라이언트에서만 조회 */
+onMounted(loadLikes)
 </script>
 
 <template>

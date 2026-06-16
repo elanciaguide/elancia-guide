@@ -7,12 +7,12 @@ export default defineNuxtConfig({
   ],
   /** 사이트 기본 정보 (sitemap/canonical/OG 에서 공유) */
   site: {
-    url: 'https://elanciaguide.github.io',
+    url: 'https://elanciaguide.vercel.app',
     name: '일랜시아 가이드',
   },
   sitemap: {
-    /** 런타임 의존 라우트는 sitemap 에서 제외 */
-    exclude: ['/board/**', '/admin/**'],
+    /** 관리자 페이지만 sitemap 제외 (게시판은 SSR 로 색인 노출) */
+    exclude: ['/admin/**'],
   },
   app: {
     head: {
@@ -32,11 +32,11 @@ export default defineNuxtConfig({
         { name: 'keywords', content: '일랜시아, 일랜시아 리마스터, 일랜시아 클래식, Project ER, 프로젝트ER, 일랜시아 가이드, 일랜시아 공략, 넥슨 리플레이, Elancia' },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: '일랜시아 가이드' },
-        { property: 'og:image', content: 'https://elanciaguide.github.io/og-image.jpg' },
+        { property: 'og:image', content: 'https://elanciaguide.vercel.app/og-image.jpg' },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:image', content: 'https://elanciaguide.github.io/og-image.jpg' },
+        { name: 'twitter:image', content: 'https://elanciaguide.vercel.app/og-image.jpg' },
       ],
     },
   },
@@ -57,16 +57,14 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
-  /** GitHub Pages(username.github.io 루트) 정적 배포 */
+  /** Vercel 배포 (SSR 지원) */
   nitro: {
-    preset: 'github-pages',
-    prerender: {
-      /** 게시판/관리자는 런타임 데이터·권한 의존 → 프리렌더 제외, 클라이언트 렌더 */
-      ignore: ['/board', '/admin'],
-    },
+    preset: 'vercel',
   },
   routeRules: {
-    '/board/**': { prerender: false },
-    '/admin/**': { prerender: false },
+    /** 게시판: 요청 시 서버 렌더(SSR) → 글 내용이 HTML 에 포함되어 검색 색인됨 */
+    '/board/**': { ssr: true },
+    /** 관리자: 권한·런타임 데이터 의존 → 색인 불필요, 클라이언트 전용 */
+    '/admin/**': { ssr: false, robots: false },
   },
 })

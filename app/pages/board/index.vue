@@ -10,9 +10,6 @@ const boardService = useBoardService()
 const { loadCategories, categoriesByGroup, categoryById } = useBoardCategories()
 const { hasPermission } = usePermissions()
 
-const posts = ref<PostSummary[]>([])
-const isLoading = ref(true)
-const loadError = ref('')
 const selectedCategoryId = ref<number | 'all'>('all')
 const newCategoryId = ref<number | null>(null)
 
@@ -28,18 +25,20 @@ const writableCategories = computed(() =>
 
 const labelOf = (categoryId: number) => categoryById(categoryId)?.label ?? ''
 
-const loadPosts = async () => {
-  isLoading.value = true
-  loadError.value = ''
-  const communityIds = communityCategories.value.map((category) => category.id)
-  const filterCategoryId = selectedCategoryId.value === 'all' ? null : selectedCategoryId.value
-  try {
-    posts.value = await boardService.listPosts(communityIds, filterCategoryId)
-  } catch (caughtError) {
-    loadError.value = caughtError instanceof Error ? caughtError.message : '불러오기 실패'
-  }
-  isLoading.value = false
-}
+/** SSR: 서버에서 글 목록을 받아 HTML 에 포함(검색 색인). 필터 변경 시 재조회. */
+const { data, pending: isLoading, error, refresh: loadPosts } = await useAsyncData(
+  () => `board-list-${selectedCategoryId.value}`,
+  async () => {
+    await loadCategories()
+    const communityIds = categoriesByGroup('community').map((category) => category.id)
+    const filterCategoryId = selectedCategoryId.value === 'all' ? null : selectedCategoryId.value
+    return boardService.listPosts(communityIds, filterCategoryId)
+  },
+  { watch: [selectedCategoryId] },
+)
+
+const posts = computed<PostSummary[]>(() => data.value ?? [])
+const loadError = computed(() => (error.value ? '불러오기 실패' : ''))
 
 const {
   isWriting,
@@ -55,16 +54,9 @@ const {
   submitPost,
 } = usePostComposer(() => newCategoryId.value, loadPosts)
 
-watch(selectedCategoryId, loadPosts)
 watch(writableCategories, (writable) => {
   if (newCategoryId.value === null && writable.length > 0) newCategoryId.value = writable[0]!.id
-})
-
-onMounted(async () => {
-  await loadCategories()
-  if (writableCategories.value.length > 0) newCategoryId.value = writableCategories.value[0]!.id
-  await loadPosts()
-})
+}, { immediate: true })
 </script>
 
 <template>

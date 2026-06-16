@@ -112,6 +112,36 @@ watch(
       </li>
     </ul>
 
+    <!-- 외부 채널 (디스코드 / 유튜브) -->
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a
+          href="https://discord.gg/elancia"
+          target="_blank"
+          rel="noopener"
+          class="nav-link nav-link--external"
+        >
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.317 4.369A19.79 19.79 0 0 0 15.885 3c-.213.382-.46.898-.63 1.307a18.27 18.27 0 0 0-5.51 0A12.6 12.6 0 0 0 9.105 3a19.74 19.74 0 0 0-4.435 1.37C1.87 8.59 1.11 12.7 1.49 16.76a19.95 19.95 0 0 0 6.08 3.07c.49-.67.927-1.38 1.302-2.13-.717-.27-1.404-.604-2.05-.997.172-.127.34-.26.502-.397 3.954 1.85 8.226 1.85 12.133 0 .164.137.332.27.502.397-.648.394-1.336.728-2.052.998.375.748.81 1.46 1.302 2.13a19.9 19.9 0 0 0 6.082-3.07c.448-4.706-.766-8.78-3.078-12.392ZM8.02 14.331c-1.183 0-2.156-1.086-2.156-2.42 0-1.332.952-2.42 2.156-2.42 1.213 0 2.177 1.097 2.156 2.42 0 1.334-.952 2.42-2.156 2.42Zm7.96 0c-1.183 0-2.156-1.086-2.156-2.42 0-1.332.952-2.42 2.156-2.42 1.213 0 2.177 1.097 2.156 2.42 0 1.334-.943 2.42-2.156 2.42Z" />
+          </svg>
+          디스코드
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          href="https://www.youtube.com/@project_er"
+          target="_blank"
+          rel="noopener"
+          class="nav-link nav-link--external"
+        >
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M23.498 6.186a3.02 3.02 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.02 3.02 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.02 3.02 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.02 3.02 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814ZM9.546 15.568V8.432L15.818 12l-6.273 3.568Z" />
+          </svg>
+          유튜브
+        </a>
+      </li>
+    </ul>
+
     <!-- 소식 그룹 (DB news + 코드 고정 패치노트) -->
     <button
       class="nav-group-title"
@@ -316,6 +346,20 @@ watch(
 .nav-link--child {
   font-size: 0.86rem;
   color: var(--color-text-muted);
+}
+
+.nav-link--external {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  color: var(--color-text-muted);
+}
+
+.nav-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
 }
 
 .nav-link:hover {
